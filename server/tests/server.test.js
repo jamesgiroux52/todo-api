@@ -12,7 +12,7 @@ const todos = [{
     _id: new ObjectID(),
     text: 'Second test todo',
     completed: true,
-    completedAt: 123
+    completedAt: new Date().getTime()
 }];
 
 beforeEach((done) => {
@@ -148,7 +148,7 @@ describe('PATCH /todos/:id', () => {
           .expect((res) => {
             expect(res.body.todo.text).toBe(text);
             expect(res.body.todo.completed).toBe(true);
-            expect(res.body.todo.completedAt).toBeA('number');
+            expect(res.body.todo.completedAt).toNotBe(null);
           })
           .end(done);         
     });
@@ -167,4 +167,19 @@ describe('PATCH /todos/:id', () => {
           })
           .end(done);    
     });
+
+    it('should return 404 if todo not found', (done) => {
+        var newHexId = new ObjectID().toHexString();
+        request(app)
+            .patch(`/todos/${newHexId}`)
+            .expect(404)
+            .end(done)
+    });
+
+    it('should return 404 for invalid ObjectIDs', (done) => {
+        request(app)
+            .patch('/todos/123abc')
+            .expect(404)
+            .end(done)
+    });    
 });
