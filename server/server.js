@@ -13,7 +13,6 @@ var {authenticate} = require('./middleware/authenticate');
 var app = express();
 const port = process.env.PORT;
 
-// middleware
 app.use(bodyParser.json());
 
 app.post('/todos', (req, res) => {
